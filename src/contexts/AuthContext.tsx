@@ -17,7 +17,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const storedUser = localStorage.getItem('ird-user');
     const storedToken = localStorage.getItem('ird-token');
     
-    if (storedUser && storedToken) {
+    if (
+      storedUser &&
+      storedUser !== "undefined" &&
+      storedToken &&
+      storedToken !== "undefined"
+    ) {
       setUser(JSON.parse(storedUser));
     }
     setIsLoading(false);

@@ -231,6 +231,7 @@ const IssuedProperties: React.FC = () => {
           </div>
           <div className="flex flex-col sm:flex-row gap-4">
             <select
+              aria-label="Filter by property type"
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
               className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -241,6 +242,7 @@ const IssuedProperties: React.FC = () => {
               <option value="permanent-temporary">Permanent-Temporary</option>
             </select>
             <select
+              aria-label="Sort issued properties"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
               className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"

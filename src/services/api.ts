@@ -1,9 +1,11 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3001/api';
+// Use environment variable for API base URL, fallback to production URL
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
+  timeout: 30000, // 30 seconds timeout
 });
 
 // Add auth token to requests

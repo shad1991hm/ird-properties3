@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Search, Edit, Trash2, Package, Eye, ChevronDown, ChevronUp, Download } from 'lucide-react';
 import { useData } from '../contexts/DataContext';
+import { useAuth } from '../contexts/AuthContext';
 import { Property } from '../types';
 import PropertyForm from './PropertyForm';
 import PropertyDetails from './PropertyDetails';
@@ -8,6 +9,7 @@ import { jsPDF } from 'jspdf';
 
 const Properties: React.FC = () => {
   const { properties, addProperty, updateProperty, deleteProperty } = useData();
+  const { user } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [viewingProperty, setViewingProperty] = useState<Property | null>(null);
@@ -202,14 +204,16 @@ const Properties: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-900">Properties</h1>
           <p className="text-gray-600">Manage your property inventory</p>
         </div>
-        <button
-          onClick={() => setShowForm(true)}
-          className="flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors"
-          title="Add new property"
-        >
-          <Plus className="w-5 h-5 mr-2" />
-          Add Property
-        </button>
+        {(user?.role === 'admin' || user?.role === 'store_manager') && (
+          <button
+            onClick={() => setShowForm(true)}
+            className="flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors"
+            title="Add new property"
+          >
+            <Plus className="w-5 h-5 mr-2" />
+            Add Property
+          </button>
+        )}
       </div>
 
       {/* Stats Cards */}
@@ -430,20 +434,24 @@ const Properties: React.FC = () => {
                                 >
                                   <Eye className="h-5 w-5" />
                                 </button>
-                                <button
-                                  onClick={() => handleEdit(property)}
-                                  className="text-secondary-600 hover:text-secondary-900"
-                                  title="Edit property"
-                                >
-                                  <Edit className="h-5 w-5" />
-                                </button>
-                                <button
-                                  onClick={() => handleDelete(property.id)}
-                                  className="text-red-600 hover:text-red-900"
-                                  title="Delete property"
-                                >
-                                  <Trash2 className="h-5 w-5" />
-                                </button>
+                                {(user?.role === 'admin' || user?.role === 'store_manager') && (
+                                  <>
+                                    <button
+                                      onClick={() => handleEdit(property)}
+                                      className="text-secondary-600 hover:text-secondary-900"
+                                      title="Edit property"
+                                    >
+                                      <Edit className="h-5 w-5" />
+                                    </button>
+                                    <button
+                                      onClick={() => handleDelete(property.id)}
+                                      className="text-red-600 hover:text-red-900"
+                                      title="Delete property"
+                                    >
+                                      <Trash2 className="h-5 w-5" />
+                                    </button>
+                                  </>
+                                )}
                               </td>
                             </tr>
                           );
@@ -464,7 +472,7 @@ const Properties: React.FC = () => {
                   : 'Get started by adding your first property'
                 }
               </p>
-              {!searchTerm && (
+              {!searchTerm && (user?.role === 'admin' || user?.role === 'store_manager') && (
                 <button
                   onClick={() => setShowForm(true)}
                   className="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors"
@@ -541,20 +549,24 @@ const Properties: React.FC = () => {
                           >
                             <Eye className="h-5 w-5" />
                           </button>
-                          <button
-                            onClick={() => handleEdit(property)}
-                            className="text-secondary-600 hover:text-secondary-900"
-                            title="Edit property"
-                          >
-                            <Edit className="h-5 w-5" />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(property.id)}
-                            className="text-red-600 hover:text-red-900"
-                            title="Delete property"
-                          >
-                            <Trash2 className="h-5 w-5" />
-                          </button>
+                          {(user?.role === 'admin' || user?.role === 'store_manager') && (
+                            <>
+                              <button
+                                onClick={() => handleEdit(property)}
+                                className="text-secondary-600 hover:text-secondary-900"
+                                title="Edit property"
+                              >
+                                <Edit className="h-5 w-5" />
+                              </button>
+                              <button
+                                onClick={() => handleDelete(property.id)}
+                                className="text-red-600 hover:text-red-900"
+                                title="Delete property"
+                              >
+                                <Trash2 className="h-5 w-5" />
+                              </button>
+                            </>
+                          )}
                         </td>
                       </tr>
                     );

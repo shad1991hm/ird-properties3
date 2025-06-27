@@ -15,9 +15,11 @@ const PORT = process.env.PORT || 3001;
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: ['https://irdp.sidrakardis.com', 'http://localhost:5173', 'http://localhost:3000'],
+  credentials: true
+}));
 app.use(express.json());
-
 // Database setup
 const db = new sqlite3.Database(path.join(__dirname, 'ird_properties.db'));
 
@@ -116,19 +118,19 @@ db.serialize(() => {
       id: uuidv4(),
       username: 'admin',
       password: bcrypt.hashSync('admin123', 10),
-      name: 'System Administrator',
+      name: 'Administrator',
       role: 'admin',
-      department: 'IT Department',
-      email: 'admin@edu.et'
+      department: 'Property Office',
+      email: 'admin@eduird.et'
     },
     {
       id: uuidv4(),
       username: 'user',
       password: bcrypt.hashSync('user123', 10),
-      name: 'Faculty Member',
+      name: 'Sidrak H.',
       role: 'user',
-      department: 'Engineering Department',
-      email: 'user@edu.et'
+      department: 'ADRD',
+      email: 'user@eduird.et'
     },
     {
       id: uuidv4(),
@@ -137,7 +139,7 @@ db.serialize(() => {
       name: 'Store Manager',
       role: 'store_manager',
       department: 'Store Department',
-      email: 'store@edu.et'
+      email: 'store@eduird.et'
     }
   ];
 
@@ -145,67 +147,6 @@ db.serialize(() => {
     db.run(
       'INSERT OR IGNORE INTO users (id, username, password, name, role, department, email) VALUES (?, ?, ?, ?, ?, ?, ?)',
       [user.id, user.username, user.password, user.name, user.role, user.department, user.email]
-    );
-  });
-
-  // Insert sample properties
-  const sampleProperties = [
-    {
-      id: uuidv4(),
-      number: 'EDU-001',
-      name: 'Desktop Computer',
-      model_number: 'HP-ProDesk-400',
-      serial_number: 'HP123456789',
-      date: '2024-01-15',
-      company_name: 'HP Inc.',
-      measurement: 'pieces',
-      quantity: 50,
-      unit_price: 25000,
-      total_price: 1250000,
-      property_type: 'permanent',
-      available_quantity: 45
-    },
-    {
-      id: uuidv4(),
-      number: 'EDU-002',
-      name: 'Office Chair',
-      model_number: 'OFC-CHAIR-001',
-      serial_number: 'CHR987654321',
-      date: '2024-01-20',
-      company_name: 'Office Furniture Co.',
-      measurement: 'pieces',
-      quantity: 100,
-      unit_price: 3500,
-      total_price: 350000,
-      property_type: 'permanent',
-      available_quantity: 85
-    },
-    {
-      id: uuidv4(),
-      number: 'EDU-003',
-      name: 'Printer Paper',
-      model_number: 'A4-80GSM',
-      serial_number: 'PPR2024001',
-      date: '2024-02-01',
-      company_name: 'Paper Supply Ltd.',
-      measurement: 'reams',
-      quantity: 500,
-      unit_price: 150,
-      total_price: 75000,
-      property_type: 'temporary',
-      available_quantity: 350
-    }
-  ];
-
-  sampleProperties.forEach(property => {
-    db.run(
-      `INSERT OR IGNORE INTO properties 
-       (id, number, name, model_number, serial_number, date, company_name, measurement, 
-        quantity, unit_price, total_price, property_type, available_quantity) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [property.id, property.number, property.name, property.model_number, property.serial_number,
-       property.date, property.company_name, property.measurement, property.quantity,
-       property.unit_price, property.total_price, property.property_type, property.available_quantity]
     );
   });
 });
@@ -427,7 +368,7 @@ app.get('/api/properties', authenticateToken, (req, res) => {
 });
 
 app.post('/api/properties', authenticateToken, (req, res) => {
-  if (req.user.role !== 'admin') {
+  if (req.user.role !== 'admin' && req.user.role !== 'store_manager') {
     return res.status(403).json({ error: 'Unauthorized' });
   }
 
@@ -457,7 +398,7 @@ app.post('/api/properties', authenticateToken, (req, res) => {
 });
 
 app.put('/api/properties/:id', authenticateToken, (req, res) => {
-  if (req.user.role !== 'admin') {
+  if (req.user.role !== 'admin' && req.user.role !== 'store_manager') {
     return res.status(403).json({ error: 'Unauthorized' });
   }
 
@@ -487,7 +428,7 @@ app.put('/api/properties/:id', authenticateToken, (req, res) => {
 });
 
 app.delete('/api/properties/:id', authenticateToken, (req, res) => {
-  if (req.user.role !== 'admin') {
+  if (req.user.role !== 'admin' && req.user.role !== 'store_manager') {
     return res.status(403).json({ error: 'Unauthorized' });
   }
 
@@ -685,6 +626,14 @@ app.get('/api/dashboard/stats', authenticateToken, (req, res) => {
       });
     });
   });
+});
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../dist'))); // or '../build' if that's your build folder
+
+// For any other requests, send back React's index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist/index.html')); // or '../build/index.html'
 });
 
 app.listen(PORT, () => {

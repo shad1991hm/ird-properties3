@@ -49,6 +49,7 @@ const Layout: React.FC = () => {
     } else if (user?.role === 'store_manager') {
       return [
         ...baseItems,
+        { name: t('nav.properties'), href: '/properties', icon: Package },
         { name: t('nav.issueProperties'), href: '/issue-properties', icon: CheckSquare },
         { name: t('nav.issuedProperties'), href: '/issued-properties', icon: FileText },
         { name: t('nav.reports'), href: '/reports', icon: BarChart3 },

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Package, FileText, CheckSquare, TrendingUp, Users, AlertTriangle } from 'lucide-react';
+import { Package, FileText, CheckSquare, TrendingUp, AlertTriangle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useData } from '../contexts/DataContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -9,7 +10,8 @@ const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const { properties, requests, issuedProperties, loading } = useData();
   const { t } = useLanguage();
-  const [dashboardStats, setDashboardStats] = useState<any>({});
+  const navigate = useNavigate();
+  const [, setDashboardStats] = useState<any>({});
 
   useEffect(() => {
     const fetchDashboardStats = async () => {
@@ -29,7 +31,7 @@ const Dashboard: React.FC = () => {
   const getStats = () => {
     const totalProperties = properties.reduce((sum, p) => sum + p.quantity, 0);
     const totalValue = properties.reduce((sum, p) => sum + p.totalPrice, 0);
-    const lowStockItems = properties.filter(p => p.availableQuantity < p.quantity * 0.1).length;
+    const lowStockItems = properties.filter(p => (p.availableQuantity / p.quantity) <= 0.25).length;
     const pendingRequests = requests.filter(r => r.status === 'pending').length;
     const approvedRequests = requests.filter(r => r.status === 'approved' || r.status === 'adjusted').length;
     const issuedToday = issuedProperties.filter(ip => 
@@ -160,19 +162,28 @@ const Dashboard: React.FC = () => {
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 xl:p-6">
           <h3 className="text-lg xl:text-xl font-semibold text-gray-900 dark:text-white mb-4 xl:mb-6">Quick Actions</h3>
           <div className="space-y-3 xl:space-y-4">
-            <button className="w-full text-left p-3 xl:p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            <button 
+              onClick={() => navigate('/properties')}
+              className="w-full text-left p-3 xl:p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
               <div className="flex items-center space-x-3 xl:space-x-4">
                 <Package className="w-5 h-5 xl:w-6 xl:h-6 text-primary-600" />
                 <span className="text-sm xl:text-base font-medium text-gray-900 dark:text-white">Register New Property</span>
               </div>
             </button>
-            <button className="w-full text-left p-3 xl:p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            <button 
+              onClick={() => navigate('/requests')}
+              className="w-full text-left p-3 xl:p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
               <div className="flex items-center space-x-3 xl:space-x-4">
                 <FileText className="w-5 h-5 xl:w-6 xl:h-6 text-secondary-600" />
                 <span className="text-sm xl:text-base font-medium text-gray-900 dark:text-white">View Pending Requests</span>
               </div>
             </button>
-            <button className="w-full text-left p-3 xl:p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            <button 
+              onClick={() => navigate('/reports')}
+              className="w-full text-left p-3 xl:p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
               <div className="flex items-center space-x-3 xl:space-x-4">
                 <TrendingUp className="w-5 h-5 xl:w-6 xl:h-6 text-accent-600" />
                 <span className="text-sm xl:text-base font-medium text-gray-900 dark:text-white">Generate Reports</span>
@@ -236,16 +247,22 @@ const Dashboard: React.FC = () => {
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 xl:p-6">
           <h3 className="text-lg xl:text-xl font-semibold text-gray-900 dark:text-white mb-4 xl:mb-6">Quick Actions</h3>
           <div className="space-y-3 xl:space-y-4">
-            <button className="w-full text-left p-3 xl:p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            <button 
+              onClick={() => navigate('/available-properties')}
+              className="w-full text-left p-3 xl:p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
               <div className="flex items-center space-x-3 xl:space-x-4">
                 <Package className="w-5 h-5 xl:w-6 xl:h-6 text-primary-600" />
                 <span className="text-sm xl:text-base font-medium text-gray-900 dark:text-white">Browse Available Properties</span>
               </div>
             </button>
-            <button className="w-full text-left p-3 xl:p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            <button 
+              onClick={() => navigate('/my-requests')}
+              className="w-full text-left p-3 xl:p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
               <div className="flex items-center space-x-3 xl:space-x-4">
                 <FileText className="w-5 h-5 xl:w-6 xl:h-6 text-secondary-600" />
-                <span className="text-sm xl:text-base font-medium text-gray-900 dark:text-white">Submit New Request</span>
+                <span className="text-sm xl:text-base font-medium text-gray-900 dark:text-white">View My Requests</span>
               </div>
             </button>
           </div>
@@ -301,16 +318,40 @@ const Dashboard: React.FC = () => {
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 xl:p-6">
           <h3 className="text-lg xl:text-xl font-semibold text-gray-900 dark:text-white mb-4 xl:mb-6">Quick Actions</h3>
           <div className="space-y-3 xl:space-y-4">
-            <button className="w-full text-left p-3 xl:p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            <button 
+              onClick={() => navigate('/properties')}
+              className="w-full text-left p-3 xl:p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
               <div className="flex items-center space-x-3 xl:space-x-4">
-                <CheckSquare className="w-5 h-5 xl:w-6 xl:h-6 text-primary-600" />
+                <Package className="w-5 h-5 xl:w-6 xl:h-6 text-primary-600" />
+                <span className="text-sm xl:text-base font-medium text-gray-900 dark:text-white">Manage Properties</span>
+              </div>
+            </button>
+            <button 
+              onClick={() => navigate('/issue-properties')}
+              className="w-full text-left p-3 xl:p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              <div className="flex items-center space-x-3 xl:space-x-4">
+                <CheckSquare className="w-5 h-5 xl:w-6 xl:h-6 text-secondary-600" />
                 <span className="text-sm xl:text-base font-medium text-gray-900 dark:text-white">Issue Properties</span>
               </div>
             </button>
-            <button className="w-full text-left p-3 xl:p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            <button 
+              onClick={() => navigate('/issued-properties')}
+              className="w-full text-left p-3 xl:p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
               <div className="flex items-center space-x-3 xl:space-x-4">
-                <FileText className="w-5 h-5 xl:w-6 xl:h-6 text-secondary-600" />
+                <FileText className="w-5 h-5 xl:w-6 xl:h-6 text-accent-600" />
                 <span className="text-sm xl:text-base font-medium text-gray-900 dark:text-white">View Issued Properties</span>
+              </div>
+            </button>
+            <button 
+              onClick={() => navigate('/reports')}
+              className="w-full text-left p-3 xl:p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              <div className="flex items-center space-x-3 xl:space-x-4">
+                <TrendingUp className="w-5 h-5 xl:w-6 xl:h-6 text-green-600" />
+                <span className="text-sm xl:text-base font-medium text-gray-900 dark:text-white">Generate Reports</span>
               </div>
             </button>
           </div>
