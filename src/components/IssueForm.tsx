@@ -15,6 +15,7 @@ const IssueForm: React.FC<IssueFormProps> = ({ request, onClose }) => {
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [notes, setNotes] = useState('');
+  const [model22Number, setModel22Number] = useState('');
 
   const property = properties.find(p => p.id === request.propertyId);
   const quantityToIssue = request.approvedQuantity || request.requestedQuantity;
@@ -24,7 +25,12 @@ const IssueForm: React.FC<IssueFormProps> = ({ request, onClose }) => {
 
     setIsSubmitting(true);
     try {
-      issueProperty(request.id);
+      if (!model22Number.trim()) {
+        alert('Model 22 Number is required!');
+        setIsSubmitting(false);
+        return;
+      }
+      await issueProperty(request.id, model22Number);
       
       // Generate PDF if it's a permanent property
       if (property?.propertyType === 'permanent') {
@@ -70,6 +76,8 @@ const IssueForm: React.FC<IssueFormProps> = ({ request, onClose }) => {
       ['Property Number:', property.number],
       ['Property Name:', property.name],
       ['Model Number:', property.modelNumber],
+      ['Model 19 Number:', property.model19Number],
+      ['Model 22 Number:', model22Number],
       ['Serial Number:', property.serialNumber],
       ['Quantity Type:', property.measurement],
       ['Issued Quantity:', `${quantityToIssue}`],
@@ -207,6 +215,31 @@ const IssueForm: React.FC<IssueFormProps> = ({ request, onClose }) => {
                   <div>
                     <p className="text-sm text-gray-500">Model Number</p>
                     <p className="font-medium text-gray-900">{property.modelNumber}</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="w-5 h-5 bg-gray-400 rounded mt-1 flex-shrink-0 flex items-center justify-center">
+                    <span className="text-white text-xs font-bold">M19</span>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Model 19 Number</p>
+                    <p className="font-medium text-gray-900">{property.model19Number}</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="w-5 h-5 bg-blue-500 rounded mt-1 flex-shrink-0 flex items-center justify-center">
+                    <span className="text-white text-xs font-bold">M22</span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm text-gray-500">Model 22 Number *</p>
+                    <input
+                      type="text"
+                      value={model22Number}
+                      onChange={(e) => setModel22Number(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="Enter Model 22 Number"
+                      required
+                    />
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">

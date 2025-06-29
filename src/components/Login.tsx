@@ -26,7 +26,12 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4 transition-colors duration-200">
+    <div
+      className="min-h-screen flex items-center justify-center p-4 transition-colors duration-200"
+      style={{
+        background: 'linear-gradient(to bottom, #078930 0%, #4CAF50 25%, #F7E356 50%, #F44336 75%, #DA121A 100%)',
+      }}
+    >
       <div className="max-w-md w-full">
         {/* Header */}
         <div className="text-center mb-8 animate-fade-in">
@@ -39,7 +44,13 @@ const Login: React.FC = () => {
         </div>
 
         {/* Login Form */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 animate-slide-up border border-gray-200 dark:border-gray-700">
+        <div
+          className="rounded-2xl shadow-xl p-8 animate-slide-up border border-gray-200 dark:border-gray-700"
+          style={{
+            background: 'linear-gradient(to bottom, rgba(7,137,48,0.92) 0%, rgba(247,227,86,0.92) 50%, rgba(218,18,26,0.92) 100%)',
+            color: '#fff',
+          }}
+        >
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">

@@ -47,6 +47,7 @@ db.serialize(() => {
       number TEXT UNIQUE NOT NULL,
       name TEXT NOT NULL,
       model_number TEXT NOT NULL,
+      model_19_number TEXT NOT NULL,
       serial_number TEXT NOT NULL,
       date TEXT NOT NULL,
       company_name TEXT NOT NULL,
@@ -98,6 +99,8 @@ db.serialize(() => {
       property_number TEXT NOT NULL,
       property_name TEXT NOT NULL,
       model_number TEXT NOT NULL,
+      model_19_number TEXT NOT NULL,
+      model_22_number TEXT NOT NULL,
       serial_number TEXT NOT NULL,
       quantity_type TEXT NOT NULL,
       issued_quantity INTEGER NOT NULL,
@@ -373,7 +376,7 @@ app.post('/api/properties', authenticateToken, (req, res) => {
   }
 
   const {
-    number, name, model_number, serial_number, date, company_name,
+    number, name, model_number, model_19_number, serial_number, date, company_name,
     measurement, quantity, unit_price, property_type
   } = req.body;
 
@@ -383,10 +386,10 @@ app.post('/api/properties', authenticateToken, (req, res) => {
 
   db.run(
     `INSERT INTO properties 
-     (id, number, name, model_number, serial_number, date, company_name, measurement, 
+     (id, number, name, model_number, model_19_number, serial_number, date, company_name, measurement, 
       quantity, unit_price, total_price, property_type, available_quantity) 
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [id, number, name, model_number, serial_number, date, company_name, measurement,
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [id, number, name, model_number, model_19_number, serial_number, date, company_name, measurement,
      quantity, unit_price, total_price, property_type, available_quantity],
     function(err) {
       if (err) {
@@ -404,7 +407,7 @@ app.put('/api/properties/:id', authenticateToken, (req, res) => {
 
   const { id } = req.params;
   const {
-    number, name, model_number, serial_number, date, company_name,
+    number, name, model_number, model_19_number, serial_number, date, company_name,
     measurement, quantity, unit_price, property_type
   } = req.body;
 
@@ -412,11 +415,11 @@ app.put('/api/properties/:id', authenticateToken, (req, res) => {
 
   db.run(
     `UPDATE properties SET 
-     number = ?, name = ?, model_number = ?, serial_number = ?, date = ?, 
+     number = ?, name = ?, model_number = ?, model_19_number = ?, serial_number = ?, date = ?, 
      company_name = ?, measurement = ?, quantity = ?, unit_price = ?, 
      total_price = ?, property_type = ?, updated_at = CURRENT_TIMESTAMP
      WHERE id = ?`,
-    [number, name, model_number, serial_number, date, company_name, measurement,
+    [number, name, model_number, model_19_number, serial_number, date, company_name, measurement,
      quantity, unit_price, total_price, property_type, id],
     function(err) {
       if (err) {
@@ -538,7 +541,7 @@ app.post('/api/issue-property', authenticateToken, (req, res) => {
     return res.status(403).json({ error: 'Unauthorized' });
   }
 
-  const { request_id } = req.body;
+  const { request_id, model22Number } = req.body;
 
   db.get('SELECT * FROM property_requests WHERE id = ?', [request_id], (err, request) => {
     if (err || !request) {
@@ -558,13 +561,13 @@ app.post('/api/issue-property', authenticateToken, (req, res) => {
       db.run(
         `INSERT INTO issued_properties 
          (id, request_id, property_id, user_id, user_name, user_department, 
-          property_number, property_name, model_number, serial_number, 
+          property_number, property_name, model_number, model_19_number, model_22_number, serial_number, 
           quantity_type, issued_quantity, store_manager_id, store_manager_name, is_permanent) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [issuedPropertyId, request_id, property.id, request.user_id, request.user_name,
          request.user_department, property.number, property.name, property.model_number,
-         property.serial_number, property.measurement, issued_quantity, req.user.id,
-         req.user.name, is_permanent],
+         property.model_19_number, model22Number || '', property.serial_number, property.measurement, issued_quantity,
+         req.user.id, req.user.name, is_permanent],
         function(err) {
           if (err) {
             return res.status(500).json({ error: 'Database error' });

@@ -87,6 +87,8 @@ const Properties: React.FC = () => {
   const filteredProperties = properties.filter(property => {
     const matchesSearch = property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          property.number.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         property.modelNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         property.model19Number.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          (property.serialNumber && property.serialNumber.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesFilter = filterType === 'all' || property.propertyType === filterType;
     return matchesSearch && matchesFilter;

@@ -15,6 +15,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onClose, onSubmit
     number: '',
     name: '',
     modelNumber: '',
+    model19Number: '',
     serialNumber: '',
     date: '',
     companyName: '',
@@ -32,6 +33,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onClose, onSubmit
         number: property.number,
         name: property.name,
         modelNumber: property.modelNumber,
+        model19Number: property.model19Number,
         serialNumber: property.serialNumber,
         date: property.date,
         companyName: property.companyName,
@@ -49,6 +51,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onClose, onSubmit
     if (!formData.number.trim()) newErrors.number = 'Property number is required';
     if (!formData.name.trim()) newErrors.name = 'Property name is required';
     if (!formData.modelNumber.trim()) newErrors.modelNumber = 'Model number is required';
+    if (!formData.model19Number.trim()) newErrors.model19Number = 'Model19 number is required';
     if (!formData.serialNumber.trim()) newErrors.serialNumber = 'Serial number is required';
     if (!formData.date) newErrors.date = 'Date is required';
     if (!formData.companyName.trim()) newErrors.companyName = 'Company name is required';
@@ -72,6 +75,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onClose, onSubmit
         number: formData.number,
         name: formData.name,
         modelNumber: formData.modelNumber,
+        model19Number: formData.model19Number,
         serialNumber: formData.serialNumber,
         date: formData.date,
         companyName: formData.companyName,
@@ -141,7 +145,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onClose, onSubmit
           {/* Basic Information */}
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Basic Information</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div>
                 <label htmlFor="number" className="block text-sm font-medium text-gray-700 mb-2">
                   Class Number *
@@ -194,6 +198,24 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onClose, onSubmit
                   placeholder="e.g., HP-ProDesk-400"
                 />
                 {errors.modelNumber && <p className="mt-1 text-sm text-red-600">{errors.modelNumber}</p>}
+              </div>
+
+              <div>
+                <label htmlFor="model19Number" className="block text-sm font-medium text-gray-700 mb-2">
+                  Model19 Number *
+                </label>
+                <input
+                  type="text"
+                  id="model19Number"
+                  name="model19Number"
+                  value={formData.model19Number}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors ${
+                    errors.model19Number ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
+                  placeholder="e.g., HP123456789"
+                />
+                {errors.model19Number && <p className="mt-1 text-sm text-red-600">{errors.model19Number}</p>}
               </div>
 
               <div>

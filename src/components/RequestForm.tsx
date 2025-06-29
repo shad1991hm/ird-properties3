@@ -181,9 +181,7 @@ const RequestForm: React.FC<RequestFormProps> = ({ property, onClose }) => {
                   placeholder="Enter quantity"
                   disabled={isSubmitting}
                 />
-                <p className="mt-1 text-sm text-gray-500">
-                  Maximum available: {property.availableQuantity} {property.measurement}
-                </p>
+                
               </div>
             </div>
           </div>

@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { Package, Search, User, Calendar, Download, FileText } from 'lucide-react';
 import { useData } from '../contexts/DataContext';
 import { IssuedProperty } from '../types';
+import IssuedPropertyDetails from './IssuedPropertyDetails';
 
 const IssuedProperties: React.FC = () => {
   const { issuedProperties } = useData();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('date');
+  const [viewingProperty, setViewingProperty] = useState<IssuedProperty | null>(null);
 
   const filteredProperties = issuedProperties
     .filter(property => {
@@ -47,6 +49,16 @@ const IssuedProperties: React.FC = () => {
   };
 
   const stats = getStats();
+
+  // If viewing property details, show the details component
+  if (viewingProperty) {
+    return (
+      <IssuedPropertyDetails
+        issuedProperty={viewingProperty}
+        onClose={() => setViewingProperty(null)}
+      />
+    );
+  }
 
   const PropertyCard: React.FC<{ property: IssuedProperty }> = ({ property }) => (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200">
@@ -113,6 +125,17 @@ const IssuedProperties: React.FC = () => {
             <p className="text-sm font-medium text-gray-900">{property.modelNumber}</p>
           </div>
           <div>
+            <p className="text-xs text-gray-500 uppercase tracking-wide">Model 19 Number</p>
+            <p className="text-sm font-medium text-gray-900">{property.model19Number}</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div>
+            <p className="text-xs text-gray-500 uppercase tracking-wide">Model 22 Number</p>
+            <p className="text-sm font-medium text-gray-900">{property.model22Number}</p>
+          </div>
+          <div>
             <p className="text-xs text-gray-500 uppercase tracking-wide">Serial Number</p>
             <p className="text-sm font-medium text-gray-900">{property.serialNumber}</p>
           </div>
@@ -123,7 +146,10 @@ const IssuedProperties: React.FC = () => {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-2">
-          <button className="flex-1 flex items-center justify-center px-3 py-2 text-sm font-medium text-primary-600 bg-primary-50 hover:bg-primary-100 rounded-lg transition-colors">
+          <button 
+            onClick={() => setViewingProperty(property)}
+            className="flex-1 flex items-center justify-center px-3 py-2 text-sm font-medium text-primary-600 bg-primary-50 hover:bg-primary-100 rounded-lg transition-colors"
+          >
             <FileText className="w-4 h-4 mr-2" />
             View Details
           </button>

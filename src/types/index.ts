@@ -12,6 +12,7 @@ export interface Property {
   number: string;
   name: string;
   modelNumber: string;
+  model19Number: string;
   serialNumber: string;
   date: string;
   companyName: string;
@@ -56,6 +57,8 @@ export interface IssuedProperty {
   propertyNumber: string;
   propertyName: string;
   modelNumber: string;
+  model19Number: string;
+  model22Number: string;
   serialNumber: string;
   quantityType: string;
   issuedQuantity: number;

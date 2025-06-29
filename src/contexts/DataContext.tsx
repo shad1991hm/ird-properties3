@@ -13,7 +13,7 @@ interface DataContextType {
   deleteProperty: (id: string) => Promise<void>;
   addRequest: (request: Omit<PropertyRequest, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
   updateRequest: (id: string, updates: Partial<PropertyRequest>) => Promise<void>;
-  issueProperty: (requestId: string) => Promise<void>;
+  issueProperty: (requestId: string, model22Number?: string) => Promise<void>;
   refreshData: () => Promise<void>;
 }
 
@@ -35,6 +35,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     number: dbProperty.number,
     name: dbProperty.name,
     modelNumber: dbProperty.model_number,
+    model19Number: dbProperty.model_19_number,
     serialNumber: dbProperty.serial_number,
     date: dbProperty.date,
     companyName: dbProperty.company_name,
@@ -79,6 +80,8 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     propertyNumber: dbIssued.property_number,
     propertyName: dbIssued.property_name,
     modelNumber: dbIssued.model_number,
+    model19Number: dbIssued.model_19_number,
+    model22Number: dbIssued.model_22_number,
     serialNumber: dbIssued.serial_number,
     quantityType: dbIssued.quantity_type,
     issuedQuantity: dbIssued.issued_quantity,
@@ -144,6 +147,8 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
           propertyNumber: dbIssued.property_number,
           propertyName: dbIssued.property_name,
           modelNumber: dbIssued.model_number,
+          model19Number: dbIssued.model_19_number,
+          model22Number: dbIssued.model_22_number,
           serialNumber: dbIssued.serial_number,
           quantityType: dbIssued.quantity_type,
           issuedQuantity: dbIssued.issued_quantity,
@@ -174,6 +179,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
         number: propertyData.number,
         name: propertyData.name,
         model_number: propertyData.modelNumber,
+        model_19_number: propertyData.model19Number,
         serial_number: propertyData.serialNumber,
         date: propertyData.date,
         company_name: propertyData.companyName,
@@ -198,6 +204,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
       if (updates.number) dbUpdates.number = updates.number;
       if (updates.name) dbUpdates.name = updates.name;
       if (updates.modelNumber) dbUpdates.model_number = updates.modelNumber;
+      if (updates.model19Number) dbUpdates.model_19_number = updates.model19Number;
       if (updates.serialNumber) dbUpdates.serial_number = updates.serialNumber;
       if (updates.date) dbUpdates.date = updates.date;
       if (updates.companyName) dbUpdates.company_name = updates.companyName;
@@ -258,9 +265,9 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     }
   };
 
-  const issueProperty = async (requestId: string) => {
+  const issueProperty = async (requestId: string, model22Number?: string) => {
     try {
-      await issuanceAPI.issueProperty(requestId);
+      await issuanceAPI.issueProperty(requestId, model22Number);
       await fetchData(); // Refresh data
     } catch (error) {
       console.error('Error issuing property:', error);

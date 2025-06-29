@@ -89,9 +89,9 @@ const translations: Translations = {
   'profile.confirmPassword': { en: 'Confirm Password', am: 'የይለፍ ቃል አረጋግጥ' },
 
   // Organization
-  'org.name': { en: 'IRD Properties', am: 'IRD ንብረቶች' },
+  'org.name': { en: 'IRD Properties', am: 'ምልተ ንብረቶች' },
   'org.fullName': { en: 'Ethiopian Defence University', am: 'የኢትዮጵያ መከላከያ ዩኒቨርሲቲ' },
-  'org.department': { en: 'Institute of Research and Development (IRD)', am: 'የምርምር እና ልማት ተቋም (IRD)' },
+  'org.department': { en: 'Institute of Research and Development (IRD)', am: 'የምርምር እና ልማት ተቋም (ምልተ)' },
 
   // Auth
   'auth.signIn': { en: 'Sign In', am: 'ግባ' },

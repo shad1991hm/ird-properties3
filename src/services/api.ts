@@ -58,8 +58,8 @@ export const requestsAPI = {
 };
 
 export const issuanceAPI = {
-  issueProperty: (requestId: string) =>
-    api.post('/issue-property', { request_id: requestId }),
+  issueProperty: (requestId: string, model22Number?: string) =>
+    api.post('/issue-property', { request_id: requestId, model22Number }),
   getIssuedProperties: () => api.get('/issued-properties'),
 };
 
